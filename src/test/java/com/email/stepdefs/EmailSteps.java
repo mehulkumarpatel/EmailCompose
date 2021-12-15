@@ -2,8 +2,6 @@ package com.email.stepdefs;
 
 import java.io.IOException;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-
 import com.email.driver.DriverProvider;
 import com.email.pages.EmailPage;
 import com.email.pages.LoginPage;
@@ -11,6 +9,7 @@ import com.email.pages.LoginPage;
 import io.cucumber.core.api.Scenario;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -38,7 +37,7 @@ public class EmailSteps extends DriverProvider {
 	}
 
 	@Given("^User navigate to email login page$")
-	public void aUserNavigatesTologinPage() throws InvalidFormatException, IOException {
+	public void aUserNavigatesTologinPage() throws IOException {
 		this.loginPage.navigateToLogin();
 	}
 
@@ -52,7 +51,7 @@ public class EmailSteps extends DriverProvider {
 		this.emailPage.verifyEmailPage();
 	}
 
-	@Then("^User click on Compose button$")
+	@And("^User click on Compose button$")
 	public void clickCompose() throws Exception {
 		this.emailPage.clickCompose();
 	}

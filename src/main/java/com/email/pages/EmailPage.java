@@ -1,11 +1,11 @@
 package com.email.pages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
+import com.email.constants.CommonConstants;
 import com.email.driver.DriverProvider;
 
 public class EmailPage extends DriverProvider {
@@ -13,6 +13,8 @@ public class EmailPage extends DriverProvider {
 	public void clickSend() {
 		// Click Send
 		driver.findElement(By.xpath("//*[@role='button' and text()='Send']")).click();
+		waitForPageLoad();
+		waitForTime(CommonConstants.SMALL_TIME);
 	}
 
 	public void markLabelAsSocial() {
@@ -32,8 +34,8 @@ public class EmailPage extends DriverProvider {
 	public void enterEmailBody() {
 		// Enter email body
 		String emailBody = prop.getProperty("email.body");
-		driver.findElement(By.xpath("//div[@class='Am Al editable LW-avf']")).clear();
-		driver.findElement(By.xpath("//div[@class='Am Al editable LW-avf']")).sendKeys(emailBody);
+		driver.findElement(By.xpath("//div[@class='Am Al editable LW-avf tS-tW']")).clear();
+		driver.findElement(By.xpath("//div[@class='Am Al editable LW-avf tS-tW']")).sendKeys(emailBody);
 	}
 
 	public void enterEmailSubject() {
@@ -74,39 +76,24 @@ public class EmailPage extends DriverProvider {
 		// Click Social Tab
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='aKz' and text()='Social']")))
 				.click();
+		waitForPageLoad();
 
+		waitForTime(CommonConstants.SMALL_TIME);
 		wait.until(ExpectedConditions
 				.presenceOfElementLocated(By.xpath("//table[@class='F cf zt']/tbody/tr[1]/td[3]/span")));
-
-		try {
-			driver.findElement(By.xpath("//table[@class='F cf zt']/tbody/tr[1]/td[3]/span")).click();
-		} catch (ElementNotVisibleException e) {
-			driver.findElements(By.xpath("//table[@class='F cf zt']/tbody/tr[1]/td[3]/span")).get(1).click();
-		}
 	}
 
 	public void openReceivedEmail() {
-		// Open the received email
-		try {
-			driver.findElement(By.xpath("//table[@class='F cf zt']/tbody/tr[1]")).click();
-		} catch (ElementNotVisibleException e) {
-			driver.findElements(By.xpath("//table[@class='F cf zt']/tbody/tr[1]")).get(1).click();
-		}
 
+		String emailSubject = prop.getProperty("email.subject");
+		// Open the received email
+		driver.findElement(
+				By.xpath("//tr[@class='zA zE']//div[@class='xS']//span[@class='bqe'][text()='" + emailSubject + "']"))
+				.click();
+		waitForTime(CommonConstants.SMALL_TIME);
 	}
 
 	public void verifyRecievedEmail() {
-		// Verify email came under proper Label i.e. "Social"
-		try {
-			driver.findElement(By.xpath("//div[@class='T-I J-J5-Ji T-I-Js-Gs mA mw T-I-ax7 L3']")).click();
-		} catch (ElementNotVisibleException e) {
-			driver.findElements(By.xpath("//div[@class='T-I J-J5-Ji T-I-Js-Gs mA mw T-I-ax7 L3']")).get(1).click();
-		}
-
-		String isSocialLabelChecked = driver.findElement(By.xpath("//div[@class='J-LC J-Ks-KO J-LC-JR-Jp']"))
-				.getAttribute("aria-checked");
-		Assert.assertEquals("true", isSocialLabelChecked);
-
 		// Verify the subject and body of the received email
 		String subjectOfReceivedEmail = wait
 				.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//h2[@class='hP']"))).getText();
@@ -115,7 +102,8 @@ public class EmailPage extends DriverProvider {
 		Assert.assertEquals(emailSubject, subjectOfReceivedEmail);
 
 		String bodyOfReceivedEmail = wait
-				.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='a3s aXjCH ']"))).getText();
+				.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='a3s aiL ']/div[1]")))
+				.getText();
 		String emailBody = prop.getProperty("email.body");
 		Assert.assertEquals(emailBody, bodyOfReceivedEmail);
 

@@ -13,6 +13,7 @@ public class LoginPage extends DriverProvider {
 	public void navigateToLogin() {
 
 		driver.get("https://mail.google.com/");
+		waitForPageLoad();
 	}
 
 	public void doLogin() {
@@ -23,7 +24,7 @@ public class LoginPage extends DriverProvider {
 
 		// Click next
 		driver.findElement(By.id("identifierNext")).click();
-
+		waitForPageLoad();
 		// Enter Password read from the properties file
 		By passwordElementIdentifier = By.name("password");
 		wait.until(ExpectedConditions.presenceOfElementLocated(passwordElementIdentifier));
@@ -32,6 +33,7 @@ public class LoginPage extends DriverProvider {
 		passwordElement.sendKeys(passwordValue);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("passwordNext")));
 		driver.findElement(By.id("passwordNext")).click();
+		waitForPageLoad();
 		try {
 			if (!driver.findElement(By.xpath("//*[@role='button' and (.)='Compose']")).isDisplayed()) {
 				try {

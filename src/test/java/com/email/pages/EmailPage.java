@@ -94,4 +94,30 @@ public class EmailPage extends DriverProvider {
 		}
 
 	}
+
+	public void verifyRecievedEmail() {
+		// Verify email came under proper Label i.e. "Social"
+		try {
+			driver.findElement(By.xpath("//div[@class='T-I J-J5-Ji T-I-Js-Gs mA mw T-I-ax7 L3']")).click();
+		} catch (ElementNotVisibleException e) {
+			driver.findElements(By.xpath("//div[@class='T-I J-J5-Ji T-I-Js-Gs mA mw T-I-ax7 L3']")).get(1).click();
+		}
+
+		String isSocialLabelChecked = driver.findElement(By.xpath("//div[@class='J-LC J-Ks-KO J-LC-JR-Jp']"))
+				.getAttribute("aria-checked");
+		Assert.assertEquals("true", isSocialLabelChecked);
+
+		// Verify the subject and body of the received email
+		String subjectOfReceivedEmail = wait
+				.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//h2[@class='hP']"))).getText();
+
+		String emailSubject = prop.getProperty("email.subject");
+		Assert.assertEquals(emailSubject, subjectOfReceivedEmail);
+
+		String bodyOfReceivedEmail = wait
+				.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='a3s aXjCH ']"))).getText();
+		String emailBody = prop.getProperty("email.body");
+		Assert.assertEquals(emailBody, bodyOfReceivedEmail);
+
+	}
 }

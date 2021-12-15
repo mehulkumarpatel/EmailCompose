@@ -40,6 +40,11 @@ public class DriverProvider {
 
 	public DriverProvider() {
 		try {
+			Runtime.getRuntime().exec("taskkill /F /IM ChromeDriver.exe");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		try {
 			prop.load(new FileInputStream("./src/test/resources/config/test.properties"));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -64,6 +69,8 @@ public class DriverProvider {
 			System.setProperty("webdriver.chrome.driver", "./src/test/resources/lib/chromedriver.exe");
 			ChromeOptions chromeOptions = new ChromeOptions();
 			chromeOptions.addArguments("start-maximized");
+			chromeOptions.addArguments("enable-automation");
+			
 			// session = ((ChromeDriver)driver).getSessionId();
 			driver = new ChromeDriver(chromeOptions);
 			break;
@@ -77,6 +84,7 @@ public class DriverProvider {
 			throw new IllegalArgumentException("Browser \"" + browser + "\" isn't supported.");
 
 		}
+		driver.manage().timeouts().implicitlyWait(Integer.parseInt(prop.getProperty("timeout")), TimeUnit.SECONDS);
 		wait = new WebDriverWait(driver, Integer.parseInt(prop.getProperty("timeout")));
 
 	}

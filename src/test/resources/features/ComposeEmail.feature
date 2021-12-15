@@ -8,6 +8,9 @@ Feature: Email Compose
 		Then User click on Compose button
 		Then User enters data in To text field
 		Then User enter email subject
-		Then User enter email subject
+		Then User enter email body
 		Then User mark lable as Social
-		Then User click on Send button 
+		Then User click on Send button
+		Then User click on Social Tab
+		Then User open recieved email
+		Then User verify recieved email 

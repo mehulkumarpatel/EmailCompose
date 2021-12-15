@@ -7,7 +7,7 @@ import io.cucumber.testng.CucumberOptions;
 
 
 @CucumberOptions( tags = {"@compose_email"},glue = {"com.email.stepdefs"}, plugin = {"html:target/cucumber-reports/ComposeEmail/cucumber-pretty","json:target/json-cucumber-reports/ComposeEmail/cukejson.json",
-		"testng:target/testng-cucumber-reports/ComposeEmail/cuketestng.xml" }, features = {"src/test/resources/features/ComposeEmail"})
+		"testng:target/testng-cucumber-reports/ComposeEmail/cuketestng.xml" }, features = {"src/test/resources/features"})
 public class ComposeEmailRunner extends AbstractTestNGCucumberParallelTests {
 	
 	@BeforeClass

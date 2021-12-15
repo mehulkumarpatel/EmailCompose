@@ -82,4 +82,19 @@ public class EmailSteps extends DriverProvider {
 		this.emailPage.clickSend();
 	}
 
+	@Then("^User click on Social Tab$")
+	public void clickSocialTab() throws Exception {
+		this.emailPage.clickSocialTab();
+	}
+
+	@Then("^User open recieved email$")
+	public void openReceivedEmail() throws Exception {
+		this.emailPage.openReceivedEmail();
+	}
+
+	@Then("^User verify recieved email$")
+	public void verifyRecievedEmail() throws Exception {
+		this.emailPage.verifyRecievedEmail();
+	}
+
 }

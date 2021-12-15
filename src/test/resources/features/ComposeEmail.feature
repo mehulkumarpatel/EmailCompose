@@ -10,4 +10,4 @@ Feature: Email Compose
 		Then User enter email subject
 		Then User enter email subject
 		Then User mark lable as Social
-		Then User click on Send button
+		Then User click on Send button 

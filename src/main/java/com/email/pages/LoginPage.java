@@ -7,39 +7,42 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import com.email.driver.DriverProvider;
+import com.email.pageobjects.LoginPageLocators;
 
 public class LoginPage extends DriverProvider {
 
-	public void navigateToLogin() {
+	private LoginPageLocators locator = new LoginPageLocators();
 
-		driver.get("https://mail.google.com/");
+	public void navigateToLogin() {
+		driver.get(prop.getProperty("url"));
 		waitForPageLoad();
 	}
 
 	public void doLogin() {
 		// Enter User Name read from the properties file
-		WebElement userElement = driver.findElement(By.id("identifierId"));
+		WebElement userElement = driver.findElement(locator.usernameTextbox());
 		String userName = prop.getProperty("username");
 		userElement.sendKeys(userName);
 
 		// Click next
-		driver.findElement(By.id("identifierNext")).click();
+		driver.findElement(locator.nextButton()).click();
 		waitForPageLoad();
 		// Enter Password read from the properties file
-		By passwordElementIdentifier = By.name("password");
-		wait.until(ExpectedConditions.presenceOfElementLocated(passwordElementIdentifier));
-		WebElement passwordElement = driver.findElement(passwordElementIdentifier);
+		wait.until(ExpectedConditions.presenceOfElementLocated(locator.passwordBox()));
+		WebElement passwordElement = driver.findElement(locator.passwordBox());
 		String passwordValue = prop.getProperty("password");
 		passwordElement.sendKeys(passwordValue);
-		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("passwordNext")));
+		wait.until(ExpectedConditions.presenceOfElementLocated(locator.paswordNextButon()));
 		driver.findElement(By.id("passwordNext")).click();
 		waitForPageLoad();
+
+		// handle Skip button if visible
 		try {
-			if (!driver.findElement(By.xpath("//*[@role='button' and (.)='Compose']")).isDisplayed()) {
+			if (!driver.findElement(locator.composeButton()).isDisplayed()) {
 				try {
 					driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-					if (driver.findElement(By.xpath("//*[text()='Update']")).isDisplayed()) {
-						driver.findElement(By.xpath("//*[text()='Update']")).click();
+					if (driver.findElement(locator.updateButton()).isDisplayed()) {
+						driver.findElement(locator.updateButton()).click();
 					}
 				} catch (Exception e) {
 					driver.manage().timeouts().implicitlyWait(Integer.parseInt(prop.getProperty("timeout")),
@@ -47,8 +50,8 @@ public class LoginPage extends DriverProvider {
 				}
 				try {
 					driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-					if (driver.findElement(By.xpath("//*[text()='skip']")).isDisplayed()) {
-						driver.findElement(By.xpath("//*[text()='skip']")).click();
+					if (driver.findElement(locator.skipButton()).isDisplayed()) {
+						driver.findElement(locator.skipButton()).click();
 					}
 				} catch (Exception e) {
 					driver.manage().timeouts().implicitlyWait(Integer.parseInt(prop.getProperty("timeout")),

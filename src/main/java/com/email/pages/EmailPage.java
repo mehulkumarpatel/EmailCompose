@@ -1,58 +1,53 @@
 package com.email.pages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
 import com.email.constants.CommonConstants;
 import com.email.driver.DriverProvider;
+import com.email.pageobjects.EmailPageLocators;
 
 public class EmailPage extends DriverProvider {
+	private EmailPageLocators locator = new EmailPageLocators();
 
 	public void clickSend() {
 		// Click Send
-		driver.findElement(By.xpath("//*[@role='button' and text()='Send']")).click();
+		driver.findElement(locator.sendButton()).click();
 		waitForPageLoad();
 		waitForTime(CommonConstants.SMALL_TIME);
 	}
 
 	public void markLabelAsSocial() {
 		// Click More settings
-		wait.until(ExpectedConditions
-				.presenceOfElementLocated(By.xpath("//div[@class='J-JN-M-I J-J5-Ji Xv L3 T-I-ax7 T-I']/div[2]")))
-				.click();
-		wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[@class='J-Ph-hFsbo']"))).click();
+		wait.until(ExpectedConditions.presenceOfElementLocated(locator.moreOptionButton())).click();
+		wait.until(ExpectedConditions.presenceOfElementLocated(locator.moreOptionLable())).click();
 
 		// Choose Social label
-		wait.until(ExpectedConditions.presenceOfElementLocated(
-				By.xpath("//div[@class='J-LC-Jz' and text()='Social']/div[@class='J-LC-Jo J-J5-Ji']"))).click();
-		wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='J-JK-Jz' and text()='Apply']")))
-				.click();
+		wait.until(ExpectedConditions.presenceOfElementLocated(locator.bodySocialLabel())).click();
+		wait.until(ExpectedConditions.presenceOfElementLocated(locator.applyButton())).click();
 	}
 
 	public void enterEmailBody() {
 		// Enter email body
 		String emailBody = prop.getProperty("email.body");
-		driver.findElement(By.xpath("//div[@class='Am Al editable LW-avf tS-tW']")).clear();
-		driver.findElement(By.xpath("//div[@class='Am Al editable LW-avf tS-tW']")).sendKeys(emailBody);
+		driver.findElement(locator.emailBodyTextBox()).clear();
+		driver.findElement(locator.emailBodyTextBox()).sendKeys(emailBody);
 	}
 
 	public void enterEmailSubject() {
 		// emailSubject and emailbody to be used in this unit test.
 		String emailSubject = prop.getProperty("email.subject");
 		// Enter subject
-		By subjectBoxIdentifier = By.name("subjectbox");
-		wait.until(ExpectedConditions.presenceOfElementLocated(subjectBoxIdentifier));
-		WebElement subjectBox = driver.findElement(subjectBoxIdentifier);
+		wait.until(ExpectedConditions.presenceOfElementLocated(locator.subjectTextBox()));
+		WebElement subjectBox = driver.findElement(locator.subjectTextBox());
 		subjectBox.clear();
 		subjectBox.sendKeys(emailSubject);
 	}
 
 	public void enterToField() {
-		By toFieldIdentifier = By.name("to");
-		wait.until(ExpectedConditions.presenceOfElementLocated(toFieldIdentifier));
-		WebElement txtBoxToField = driver.findElement(toFieldIdentifier);
+		wait.until(ExpectedConditions.presenceOfElementLocated(locator.toTextBox()));
+		WebElement txtBoxToField = driver.findElement(locator.toTextBox());
 		txtBoxToField.clear();
 		String toUserValue = prop.getProperty("username");
 		txtBoxToField.sendKeys(String.format("%s@gmail.com", toUserValue));
@@ -60,49 +55,42 @@ public class EmailPage extends DriverProvider {
 
 	public void verifyEmailPage() {
 		// Verify Compose
-		By composeElementIdentifier = By.xpath("//*[@role='button' and (.)='Compose']");
-		wait.until(ExpectedConditions.presenceOfElementLocated(composeElementIdentifier));
-		Assert.assertTrue(driver.findElement(By.xpath("//*[@role='button' and (.)='Compose']")).isDisplayed());
+		wait.until(ExpectedConditions.presenceOfElementLocated(locator.composeButton()));
+		Assert.assertTrue(driver.findElement(locator.composeButton()).isDisplayed());
 	}
 
 	public void clickCompose() {
 		// Click Compose
-		By composeElementIdentifier = By.xpath("//*[@role='button' and (.)='Compose']");
-		wait.until(ExpectedConditions.presenceOfElementLocated(composeElementIdentifier));
-		driver.findElement(composeElementIdentifier).click();
+		wait.until(ExpectedConditions.presenceOfElementLocated(locator.composeButton()));
+		driver.findElement(locator.composeButton()).click();
 	}
 
 	public void clickSocialTab() {
 		// Click Social Tab
-		wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='aKz' and text()='Social']")))
-				.click();
+		wait.until(ExpectedConditions.presenceOfElementLocated(locator.socialTab())).click();
 		waitForPageLoad();
 
 		waitForTime(CommonConstants.SMALL_TIME);
-		wait.until(ExpectedConditions
-				.presenceOfElementLocated(By.xpath("//table[@class='F cf zt']/tbody/tr[1]/td[3]/span")));
+		wait.until(ExpectedConditions.presenceOfElementLocated(locator.emailList()));
 	}
 
 	public void openReceivedEmail() {
 
 		String emailSubject = prop.getProperty("email.subject");
 		// Open the received email
-		driver.findElement(
-				By.xpath("//tr[@class='zA zE']//div[@class='xS']//span[@class='bqe'][text()='" + emailSubject + "']"))
-				.click();
+		driver.findElement(locator.emailBySubject(emailSubject)).click();
 		waitForTime(CommonConstants.SMALL_TIME);
 	}
 
 	public void verifyRecievedEmail() {
 		// Verify the subject and body of the received email
-		String subjectOfReceivedEmail = wait
-				.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//h2[@class='hP']"))).getText();
+		String subjectOfReceivedEmail = wait.until(ExpectedConditions.presenceOfElementLocated(locator.emailHeader()))
+				.getText();
 
 		String emailSubject = prop.getProperty("email.subject");
 		Assert.assertEquals(emailSubject, subjectOfReceivedEmail);
 
-		String bodyOfReceivedEmail = wait
-				.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='a3s aiL ']/div[1]")))
+		String bodyOfReceivedEmail = wait.until(ExpectedConditions.presenceOfElementLocated(locator.emailBody()))
 				.getText();
 		String emailBody = prop.getProperty("email.body");
 		Assert.assertEquals(emailBody, bodyOfReceivedEmail);

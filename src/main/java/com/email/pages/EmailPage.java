@@ -1,5 +1,7 @@
 package com.email.pages;
 
+import java.util.Base64;
+
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
@@ -49,8 +51,8 @@ public class EmailPage extends DriverProvider {
 		wait.until(ExpectedConditions.presenceOfElementLocated(locator.toTextBox()));
 		WebElement txtBoxToField = driver.findElement(locator.toTextBox());
 		txtBoxToField.clear();
-		String toUserValue = prop.getProperty("username");
-		txtBoxToField.sendKeys(String.format("%s@gmail.com", toUserValue));
+		String userName = new String(Base64.getDecoder().decode(prop.getProperty("username").getBytes()));
+		txtBoxToField.sendKeys(String.format("%s@gmail.com", userName));
 	}
 
 	public void verifyEmailPage() {

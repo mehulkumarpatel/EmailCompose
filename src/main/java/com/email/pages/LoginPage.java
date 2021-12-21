@@ -1,5 +1,6 @@
 package com.email.pages;
 
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -21,16 +22,15 @@ public class LoginPage extends DriverProvider {
 	public void doLogin() {
 		// Enter User Name read from the properties file
 		WebElement userElement = driver.findElement(locator.usernameTextbox());
-		String userName = prop.getProperty("username");
+		String userName = new String(Base64.getDecoder().decode(prop.getProperty("username").getBytes()));
 		userElement.sendKeys(userName);
-
 		// Click next
 		driver.findElement(locator.nextButton()).click();
 		waitForPageLoad();
 		// Enter Password read from the properties file
 		wait.until(ExpectedConditions.presenceOfElementLocated(locator.passwordBox()));
 		WebElement passwordElement = driver.findElement(locator.passwordBox());
-		String passwordValue = prop.getProperty("password");
+		String passwordValue = new String(Base64.getDecoder().decode(prop.getProperty("password").getBytes()));
 		passwordElement.sendKeys(passwordValue);
 		wait.until(ExpectedConditions.presenceOfElementLocated(locator.paswordNextButon()));
 		driver.findElement(By.id("passwordNext")).click();
@@ -63,5 +63,11 @@ public class LoginPage extends DriverProvider {
 			driver.manage().timeouts().implicitlyWait(Integer.parseInt(prop.getProperty("timeout")), TimeUnit.SECONDS);
 		}
 
+	}
+
+	public static void main(String[] args) {
+		String test = "mehulkumar200200";
+
+		System.out.println(">" + new String(Base64.getEncoder().encode(test.getBytes())));
 	}
 }

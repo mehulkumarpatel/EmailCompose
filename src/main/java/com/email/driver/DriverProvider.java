@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -15,18 +16,20 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.email.constants.CommonConstants;
+
 import io.cucumber.core.api.Scenario;
 
 public class DriverProvider {
 
-	public static WebDriver driver = null;
+	public static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 	public static WebDriverWait wait = null;
 	public SessionId session = null;
 	public static Properties prop = new Properties();
 
 	public DriverProvider() {
 		try {
-			Runtime.getRuntime().exec("taskkill /F /IM ChromeDriver.exe");
+			Runtime.getRuntime().exec("taskkill /F /IM ChromegetDriver().exe");
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -42,7 +45,8 @@ public class DriverProvider {
 	}
 
 	public void setDriver(WebDriver driver) {
-		DriverProvider.driver = driver;
+		if (DriverProvider.driver.get() == null)
+			DriverProvider.driver.set(driver);
 	}
 
 	public void setUpDriver() {
@@ -52,26 +56,26 @@ public class DriverProvider {
 		}
 		switch (browser) {
 		case "chrome":
-			System.setProperty("webdriver.chrome.driver", prop.getProperty("webdriver.chrome.driver"));
+			System.setProperty("webgetDriver().chrome.driver", prop.getProperty("webgetDriver().chrome.driver"));
 			ChromeOptions chromeOptions = new ChromeOptions();
 			chromeOptions.addArguments("start-maximized");
 			chromeOptions.addArguments("enable-automation");
 
 			// session = ((ChromeDriver)driver).getSessionId();
-			driver = new ChromeDriver(chromeOptions);
+			setDriver(new ChromeDriver(chromeOptions));
 			break;
 		case "firefox":
-			System.setProperty("webdriver.gecko.driver", prop.getProperty("webdriver.gecko.driver"));
-			driver = new FirefoxDriver();
-			driver.manage().window().maximize();
+			System.setProperty("webgetDriver().gecko.driver", prop.getProperty("webgetDriver().gecko.driver"));
+			setDriver(new FirefoxDriver());
+			getDriver().manage().window().maximize();
 			// session = ((FirefoxDriver)driver).getSessionId();
 			break;
 		default:
 			throw new IllegalArgumentException("Browser \"" + browser + "\" isn't supported.");
 
 		}
-		driver.manage().timeouts().implicitlyWait(Integer.parseInt(prop.getProperty("timeout")), TimeUnit.SECONDS);
-		wait = new WebDriverWait(driver, Integer.parseInt(prop.getProperty("timeout")));
+		getDriver().manage().timeouts().implicitlyWait(Integer.parseInt(prop.getProperty("timeout")), TimeUnit.SECONDS);
+		wait = new WebDriverWait(getDriver(), Integer.parseInt(prop.getProperty("timeout")));
 
 	}
 
@@ -79,8 +83,13 @@ public class DriverProvider {
 		if (scenario.isFailed()) {
 			saveScreenshotsForScenario(scenario);
 		}
-		driver.close();
-		driver.quit();
+		getDriver().close();
+		getDriver().quit();
+	}
+
+	public void closeDriver() {
+		getDriver().close();
+		getDriver().quit();
 	}
 
 	private void saveScreenshotsForScenario(final Scenario scenario) {
@@ -96,9 +105,46 @@ public class DriverProvider {
 
 	}
 
+	public boolean isDisplayed(By by, long timeputms) {
+		getDriver().manage().timeouts().implicitlyWait(timeputms, TimeUnit.MILLISECONDS);
+
+		boolean isDisplayed = false;
+		try {
+			isDisplayed = getDriver().findElement(by).isDisplayed();
+		} catch (Exception e) {
+		}
+		getDriver().manage().timeouts().implicitlyWait(Integer.parseInt(prop.getProperty("timeout")), TimeUnit.SECONDS);
+		return isDisplayed;
+	}
+
+	public boolean isDisplayed(By by) {
+		return isDisplayed(by, CommonConstants.LARGE_TIME_MS);
+
+	}
+
+	public void waitForNotVisible(By by, long timeoutms) {
+		getDriver().manage().timeouts().implicitlyWait(CommonConstants.SMALL_TIME_MS, TimeUnit.MILLISECONDS);
+
+		while (isDisplayed(by) && timeoutms > 0) {
+			timeoutms = timeoutms - 1000;
+			waitForTime(1000);
+		}
+		getDriver().manage().timeouts().implicitlyWait(Integer.parseInt(prop.getProperty("timeout")), TimeUnit.SECONDS);
+
+	}
+
 	public void waitForTime(String timemilisec) {
 		try {
 			Thread.sleep(Integer.parseInt(timemilisec));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void waitForTime(long timemilisec) {
+		try {
+			Thread.sleep(timemilisec);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

@@ -1,6 +1,9 @@
 package com.email.stepdefs;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.email.driver.DriverProvider;
 import com.email.pages.EmailPage;
@@ -66,6 +69,11 @@ public class EmailSteps extends DriverProvider {
 		this.emailPage.enterEmailSubject();
 	}
 
+	@Then("^User enter email subject \"([^\"]*)\" step$")
+	public void enterEmailSubject(String subject) throws Exception {
+		this.emailPage.enterEmailSubject(subject);
+	}
+
 	@Then("^User enter email body$")
 	public void enterEmailBody() throws Exception {
 		this.emailPage.enterEmailBody();
@@ -96,4 +104,73 @@ public class EmailSteps extends DriverProvider {
 		this.emailPage.verifyRecievedEmail();
 	}
 
+	public static void main(String[] args) {
+		String base = "Motorola Solutions";
+		Map<String, Integer> countOfChar = new HashMap<>();
+
+		for (int i = 0; i < base.length(); i++) {
+			if (countOfChar.get(base.charAt(i) + "") != null) {
+				countOfChar.put(base.charAt(i) + "", countOfChar.get(base.charAt(i) + "") + 1);
+			} else {
+				countOfChar.put(base.charAt(i) + "", 1);
+			}
+		}
+
+		System.out.println("Count >" + countOfChar);
+	}
+
 }
+
+//WhatsApp
+
+//Application list android,ios
+//Tools - Appium,Java,Sele,
+//
+//Windows,Mac
+//Devices - OS list
+//
+//Application
+//Pages
+//Main
+//Chat
+//Settings
+//Upload
+//
+//Framework :
+//	
+//Base
+//	Driver 
+//Util
+//	UploadUtil
+//	DataUtils
+//	AppUtils
+//	
+//Pages extends Drivers
+//Main
+//Chat
+//Settings
+//Upload
+//
+//TestClass
+//
+//Resources
+//	UserData
+//	UploadData
+//Maven
+//TestNG
+//prop
+//Configs
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+

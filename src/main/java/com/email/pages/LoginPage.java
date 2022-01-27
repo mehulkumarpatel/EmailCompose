@@ -15,52 +15,52 @@ public class LoginPage extends DriverProvider {
 	private LoginPageLocators locator = new LoginPageLocators();
 
 	public void navigateToLogin() {
-		driver.get(prop.getProperty("url"));
+		getDriver().get(prop.getProperty("url"));
 		waitForPageLoad();
 	}
 
 	public void doLogin() {
 		// Enter User Name read from the properties file
-		WebElement userElement = driver.findElement(locator.usernameTextbox());
+		WebElement userElement = getDriver().findElement(locator.usernameTextbox());
 		String userName = new String(Base64.getDecoder().decode(prop.getProperty("username").getBytes()));
 		userElement.sendKeys(userName);
 		// Click next
-		driver.findElement(locator.nextButton()).click();
+		getDriver().findElement(locator.nextButton()).click();
 		waitForPageLoad();
 		// Enter Password read from the properties file
 		wait.until(ExpectedConditions.presenceOfElementLocated(locator.passwordBox()));
-		WebElement passwordElement = driver.findElement(locator.passwordBox());
+		WebElement passwordElement = getDriver().findElement(locator.passwordBox());
 		String passwordValue = new String(Base64.getDecoder().decode(prop.getProperty("password").getBytes()));
 		passwordElement.sendKeys(passwordValue);
 		wait.until(ExpectedConditions.presenceOfElementLocated(locator.paswordNextButon()));
-		driver.findElement(By.id("passwordNext")).click();
+		getDriver().findElement(By.id("passwordNext")).click();
 		waitForPageLoad();
 
 		// handle Skip button if visible
 		try {
-			if (!driver.findElement(locator.composeButton()).isDisplayed()) {
+			if (!getDriver().findElement(locator.composeButton()).isDisplayed()) {
 				try {
-					driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-					if (driver.findElement(locator.updateButton()).isDisplayed()) {
-						driver.findElement(locator.updateButton()).click();
+					getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+					if (getDriver().findElement(locator.updateButton()).isDisplayed()) {
+						getDriver().findElement(locator.updateButton()).click();
 					}
 				} catch (Exception e) {
-					driver.manage().timeouts().implicitlyWait(Integer.parseInt(prop.getProperty("timeout")),
+					getDriver().manage().timeouts().implicitlyWait(Integer.parseInt(prop.getProperty("timeout")),
 							TimeUnit.SECONDS);
 				}
 				try {
-					driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-					if (driver.findElement(locator.skipButton()).isDisplayed()) {
-						driver.findElement(locator.skipButton()).click();
+					getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+					if (getDriver().findElement(locator.skipButton()).isDisplayed()) {
+						getDriver().findElement(locator.skipButton()).click();
 					}
 				} catch (Exception e) {
-					driver.manage().timeouts().implicitlyWait(Integer.parseInt(prop.getProperty("timeout")),
+					getDriver().manage().timeouts().implicitlyWait(Integer.parseInt(prop.getProperty("timeout")),
 							TimeUnit.SECONDS);
 				}
 			}
 
 		} catch (Exception e) {
-			driver.manage().timeouts().implicitlyWait(Integer.parseInt(prop.getProperty("timeout")), TimeUnit.SECONDS);
+			getDriver().manage().timeouts().implicitlyWait(Integer.parseInt(prop.getProperty("timeout")), TimeUnit.SECONDS);
 		}
 
 	}

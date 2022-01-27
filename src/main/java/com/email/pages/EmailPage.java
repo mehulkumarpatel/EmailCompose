@@ -15,9 +15,9 @@ public class EmailPage extends DriverProvider {
 
 	public void clickSend() {
 		// Click Send
-		driver.findElement(locator.sendButton()).click();
+		getDriver().findElement(locator.sendButton()).click();
 		waitForPageLoad();
-		waitForTime(CommonConstants.SMALL_TIME);
+		waitForTime(CommonConstants.SMALL_TIME_MS);
 	}
 
 	public void markLabelAsSocial() {
@@ -33,8 +33,8 @@ public class EmailPage extends DriverProvider {
 	public void enterEmailBody() {
 		// Enter email body
 		String emailBody = prop.getProperty("email.body");
-		driver.findElement(locator.emailBodyTextBox()).clear();
-		driver.findElement(locator.emailBodyTextBox()).sendKeys(emailBody);
+		getDriver().findElement(locator.emailBodyTextBox()).clear();
+		getDriver().findElement(locator.emailBodyTextBox()).sendKeys(emailBody);
 	}
 
 	public void enterEmailSubject() {
@@ -42,14 +42,24 @@ public class EmailPage extends DriverProvider {
 		String emailSubject = prop.getProperty("email.subject");
 		// Enter subject
 		wait.until(ExpectedConditions.presenceOfElementLocated(locator.subjectTextBox()));
-		WebElement subjectBox = driver.findElement(locator.subjectTextBox());
+		WebElement subjectBox = getDriver().findElement(locator.subjectTextBox());
+		subjectBox.clear();
+		subjectBox.sendKeys(emailSubject);
+	}
+
+	public void enterEmailSubject(String emailSubject) {
+		// emailSubject and emailbody to be used in this unit test.
+		// Enter subject
+		prop.setProperty("email.subject", emailSubject);
+		wait.until(ExpectedConditions.presenceOfElementLocated(locator.subjectTextBox()));
+		WebElement subjectBox = getDriver().findElement(locator.subjectTextBox());
 		subjectBox.clear();
 		subjectBox.sendKeys(emailSubject);
 	}
 
 	public void enterToField() {
 		wait.until(ExpectedConditions.presenceOfElementLocated(locator.toTextBox()));
-		WebElement txtBoxToField = driver.findElement(locator.toTextBox());
+		WebElement txtBoxToField = getDriver().findElement(locator.toTextBox());
 		txtBoxToField.clear();
 		String userName = new String(Base64.getDecoder().decode(prop.getProperty("username").getBytes()));
 		txtBoxToField.sendKeys(String.format("%s@gmail.com", userName));
@@ -58,13 +68,13 @@ public class EmailPage extends DriverProvider {
 	public void verifyEmailPage() {
 		// Verify Compose
 		wait.until(ExpectedConditions.presenceOfElementLocated(locator.composeButton()));
-		Assert.assertTrue(driver.findElement(locator.composeButton()).isDisplayed());
+		Assert.assertTrue(getDriver().findElement(locator.composeButton()).isDisplayed());
 	}
 
 	public void clickCompose() {
 		// Click Compose
 		wait.until(ExpectedConditions.presenceOfElementLocated(locator.composeButton()));
-		driver.findElement(locator.composeButton()).click();
+		getDriver().findElement(locator.composeButton()).click();
 	}
 
 	public void clickSocialTab() {
@@ -72,7 +82,7 @@ public class EmailPage extends DriverProvider {
 		wait.until(ExpectedConditions.presenceOfElementLocated(locator.socialTab())).click();
 		waitForPageLoad();
 
-		waitForTime(CommonConstants.SMALL_TIME);
+		waitForTime(CommonConstants.SMALL_TIME_MS);
 		wait.until(ExpectedConditions.presenceOfElementLocated(locator.emailList()));
 	}
 
@@ -80,8 +90,8 @@ public class EmailPage extends DriverProvider {
 
 		String emailSubject = prop.getProperty("email.subject");
 		// Open the received email
-		driver.findElement(locator.emailBySubject(emailSubject)).click();
-		waitForTime(CommonConstants.SMALL_TIME);
+		getDriver().findElement(locator.emailBySubject(emailSubject)).click();
+		waitForTime(CommonConstants.SMALL_TIME_MS);
 	}
 
 	public void verifyRecievedEmail() {

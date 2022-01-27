@@ -66,10 +66,4 @@ public class LoginPage extends DriverProvider {
 		}
 
 	}
-
-	public static void main(String[] args) {
-		String test = "mehulkumar200200";
-
-		System.out.println(">" + new String(Base64.getEncoder().encode(test.getBytes())));
-	}
 }

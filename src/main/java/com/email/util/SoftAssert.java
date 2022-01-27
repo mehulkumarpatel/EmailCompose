@@ -25,7 +25,7 @@ public class SoftAssert extends org.testng.asserts.SoftAssert {
 	private boolean isDataDriven = false;
 	private static String prevMethod;
 	private static int runCount = 0;
-	private String directoryTime = new DateUtil().getDate();
+	private static String directoryTime = new DateUtil().getDate();
 
 	public SoftAssert(String methodName, boolean isDataDriven, String dataDrivenID) {
 		if (prevMethod != null && prevMethod != "" && prevMethod.length() > 0) {
@@ -115,14 +115,13 @@ public class SoftAssert extends org.testng.asserts.SoftAssert {
 		File srcFile = scrShot.getScreenshotAs(OutputType.FILE);
 		try {
 			String reportDir = new File(System.getProperty("user.dir")).getAbsolutePath() + File.separator
-					+ "test-output" + File.separator + "reports" + File.separator + directoryTime + "assertion";
+					+ "test-output" + File.separator + "reports" + File.separator + directoryTime + File.separator
+					+ "assertion";
 
 			if (className == null || className.length() == 0)
 				className = methodName;
 			if (className != null)
 				reportDir = reportDir + File.separator + className;
-			if (isDataDriven)
-				reportDir = reportDir + File.separator + dataDrivenID;
 			System.setProperty("ReprotDirectory", reportDir);
 			File destFile = new File(reportDir + File.separator + methodName + new DateUtil().getDate() + ".png");
 			FileUtils.copyFile(srcFile, destFile);
@@ -135,13 +134,13 @@ public class SoftAssert extends org.testng.asserts.SoftAssert {
 	private void mergeScreeToPDF() {
 
 		String reportDir = new File(System.getProperty("user.dir")).getAbsolutePath() + File.separator + "test-output"
-				+ File.separator + "reports" + File.separator + directoryTime + "assertion";
+				+ File.separator + "reports" + File.separator + directoryTime + File.separator + "assertion";
 		if (className == null || className.length() == 0)
 			className = methodName;
-		if (className != null)
-			reportDir = reportDir + File.separator + className;
-		if (isDataDriven)
-			reportDir = reportDir + File.separator + dataDrivenID;
+		if (fullClassName == null || fullClassName.length() == 0)
+			fullClassName = fullMehtodName;
+
+		reportDir = reportDir + File.separator + className;
 
 		try {
 			File dir = new File(reportDir);
@@ -170,11 +169,12 @@ public class SoftAssert extends org.testng.asserts.SoftAssert {
 		}
 		File srcFile = new File(reportDir + File.separator + fullClassName + ".pdf");
 		String pdfFileDir = new File(System.getProperty("user.dir")).getAbsolutePath() + File.separator + "test-output"
-				+ File.separator + "reports" + File.separator + directoryTime + "pdf";
+				+ File.separator + "reports" + File.separator + directoryTime + File.separator + "pdf";
 		File destFile = new File(pdfFileDir + File.separator + fullClassName + ".pdf");
 		try {
 			FileUtils.copyFile(srcFile, destFile);
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 	}

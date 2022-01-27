@@ -11,14 +11,20 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.ITestContext;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 
 import com.email.constants.CommonConstants;
+import com.email.util.SoftAssert;
 
 import io.cucumber.core.api.Scenario;
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class DriverProvider {
 
@@ -26,7 +32,7 @@ public class DriverProvider {
 	public static WebDriverWait wait = null;
 	public SessionId session = null;
 	public static Properties prop = new Properties();
-
+	protected SoftAssert softAssert;
 	public DriverProvider() {
 		try {
 			Runtime.getRuntime().exec("taskkill /F /IM ChromegetDriver().exe");
@@ -40,8 +46,18 @@ public class DriverProvider {
 		}
 	}
 
+	@BeforeTest
+	public void before(ITestContext scenario) {
+		setUpWebDriver();
+	}
+
+	@AfterTest
+	public void after(ITestContext scenario) {
+		closeDriver();
+	}
+
 	public WebDriver getDriver() {
-		return this.getDriver();
+		return DriverProvider.driver.get();
 	}
 
 	public void setDriver(WebDriver driver) {
@@ -49,14 +65,16 @@ public class DriverProvider {
 			DriverProvider.driver.set(driver);
 	}
 
-	public void setUpDriver() {
+	public void setUpWebDriver() {
 		String browser = prop.getProperty("browser");
 		if (browser == null) {
 			browser = "chrome";
 		}
 		switch (browser) {
 		case "chrome":
-			System.setProperty("webgetDriver().chrome.driver", prop.getProperty("webgetDriver().chrome.driver"));
+			WebDriverManager.chromedriver().setup();
+			// System.setProperty("webgetDriver().chrome.driver",
+			// prop.getProperty("webgetDriver().chrome.driver"));
 			ChromeOptions chromeOptions = new ChromeOptions();
 			chromeOptions.addArguments("start-maximized");
 			chromeOptions.addArguments("enable-automation");
@@ -65,8 +83,16 @@ public class DriverProvider {
 			setDriver(new ChromeDriver(chromeOptions));
 			break;
 		case "firefox":
-			System.setProperty("webgetDriver().gecko.driver", prop.getProperty("webgetDriver().gecko.driver"));
+			WebDriverManager.firefoxdriver().setup();
+			// System.setProperty("webgetDriver().gecko.driver",
+			// prop.getProperty("webgetDriver().gecko.driver"));
 			setDriver(new FirefoxDriver());
+			getDriver().manage().window().maximize();
+			// session = ((FirefoxDriver)driver).getSessionId();
+			break;
+		case "edge":
+			WebDriverManager.edgedriver().setup();
+			setDriver(new EdgeDriver());
 			getDriver().manage().window().maximize();
 			// session = ((FirefoxDriver)driver).getSessionId();
 			break;

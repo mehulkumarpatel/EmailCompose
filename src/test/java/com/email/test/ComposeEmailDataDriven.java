@@ -2,9 +2,6 @@ package com.email.test;
 
 import java.io.IOException;
 
-import org.testng.ITestContext;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -29,24 +26,13 @@ public class ComposeEmailDataDriven extends DriverProvider {
 		return new ExcelUtil().readExcelData("Employee", "SubjectsData.xlsx");
 	}
 
-	@BeforeTest
-	public void before(ITestContext scenario) {
-		this.scenDesc = scenario.getName();
-		setUpDriver();
-	}
-
-	@AfterTest
-	public void after(ITestContext scenario) {
-		closeDriver();
-	}
-
 	@Test(dataProvider = "applicationData")
 	public void aUserNavigatesTologinPage(String... strings) throws IOException {
 		int i = 0;
 		String name = strings[i++];
 //		String email=strings[i++];
 
-		this.loginPage.navigateToLogin();
+		this.loginPage.navigateToLogin(softAssert);
 		this.loginPage.doLogin();
 		this.emailPage.verifyEmailPage();
 		this.emailPage.clickCompose();

@@ -2,7 +2,6 @@ package com.email.stepdefs;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import com.email.driver.DriverProvider;
@@ -31,7 +30,7 @@ public class EmailSteps extends DriverProvider {
 	@Before
 	public void before(Scenario scenario) {
 		this.scenDesc = scenario.getName();
-		setUpDriver();
+		setUpWebDriver();
 	}
 
 	@After
@@ -41,7 +40,7 @@ public class EmailSteps extends DriverProvider {
 
 	@Given("^User navigate to email login page$")
 	public void aUserNavigatesTologinPage() throws IOException {
-		this.loginPage.navigateToLogin();
+		this.loginPage.navigateToLogin(softAssert);
 	}
 
 	@When("^User do login with username and password$")

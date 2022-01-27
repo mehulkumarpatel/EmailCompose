@@ -9,14 +9,16 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import com.email.driver.DriverProvider;
 import com.email.pageobjects.LoginPageLocators;
+import com.email.util.SoftAssert;
 
 public class LoginPage extends DriverProvider {
 
 	private LoginPageLocators locator = new LoginPageLocators();
 
-	public void navigateToLogin() {
+	public void navigateToLogin(SoftAssert softAssert) {
 		getDriver().get(prop.getProperty("url"));
 		waitForPageLoad();
+		softAssert.assertTrue(true);
 	}
 
 	public void doLogin() {

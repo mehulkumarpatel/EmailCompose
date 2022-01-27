@@ -111,7 +111,7 @@ public class SoftAssert extends org.testng.asserts.SoftAssert {
 	}
 
 	private String takeScreenshot(String methodName) {
-		TakesScreenshot scrShot = ((TakesScreenshot) DriverProvider.driver);
+		TakesScreenshot scrShot = ((TakesScreenshot) DriverProvider.driver.get());
 		File srcFile = scrShot.getScreenshotAs(OutputType.FILE);
 		try {
 			String reportDir = new File(System.getProperty("user.dir")).getAbsolutePath() + File.separator
